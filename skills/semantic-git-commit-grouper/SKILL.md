@@ -1,7 +1,7 @@
 ---
 name: semantic-git-commit-grouper
-description: Intelligently group git changes into semantic commits based on purpose (refactor, feature, bugfix, docs). Analyzes git status and diffs to suggest logical commit groupings with descriptive messages. Use when preparing to commit multiple changes, when user has many unstaged files, or when user mentions "commit", "group changes", or "organize commits".
-allowed-tools: Bash, Read, Grep
+description: Intelligently group git changes into semantic commits based on purpose (refactor, feature, bugfix, docs). Analyzes git status and diffs to suggest logical commit groupings with descriptive messages. Use when preparing to commit multiple changes, when user has many unstaged files, when user mentions "commit", "group changes", or "organize commits", or when encountering GitHub permission/authentication errors during git operations.
+allowed-tools: Bash, Read, Grep, WebFetch
 ---
 
 # Semantic Git Commit Grouper Skill
@@ -218,12 +218,18 @@ For each approved group:
    )"
    ```
 
-3. **Verify commit**:
+3. **Handle errors**:
+   - If git push/pull fails with **permission denied** or **authentication** errors:
+     - Check GitHub status at https://www.githubstatus.com/
+     - Use WebFetch to retrieve current status
+     - Inform user if there's a GitHub outage vs. local auth issue
+
+4. **Verify commit**:
    ```bash
    git log -1 --stat
    ```
 
-4. **Proceed to next group**
+5. **Proceed to next group**
 
 ## Commit Message Templates
 
@@ -491,6 +497,54 @@ Good commits can be combined into PR description:
 - Ask user to clarify purpose
 - Use `git blame` to see context
 
+### GitHub Permission/Authentication Errors
+
+When encountering errors like:
+- `Permission denied (publickey)`
+- `Authentication failed`
+- `Could not read from remote repository`
+- `fatal: unable to access`
+- `403 Forbidden`
+
+**Immediate actions**:
+
+1. **Check GitHub Status**:
+   ```
+   Use WebFetch tool:
+   url: https://www.githubstatus.com/
+   prompt: "Check if there are any current incidents or degraded performance affecting GitHub services, especially Git Operations. Summarize the current status."
+   ```
+
+2. **Diagnose the issue**:
+   - **If GitHub shows incidents**: Inform user that GitHub is experiencing issues, show the incident details, and suggest waiting
+   - **If GitHub is operational**: The issue is likely local authentication
+     - Check if SSH keys are configured: `ssh -T git@github.com`
+     - Verify remote URL: `git remote -v`
+     - Suggest checking GitHub personal access tokens if using HTTPS
+     - Recommend reviewing GitHub authentication documentation
+
+3. **Provide context**:
+   ```markdown
+   GitHub Status: [Operational / Degraded / Incident]
+
+   [If incident]: GitHub is currently experiencing issues with [affected services].
+   Incident: [description]
+   Status: [current status]
+   Recommendation: Wait for GitHub to resolve the issue before proceeding.
+
+   [If operational]: GitHub services are operational. This appears to be a local
+   authentication issue. Please check:
+   - SSH keys: ssh -T git@github.com
+   - Remote URL: git remote -v
+   - GitHub personal access token (if using HTTPS)
+   ```
+
+4. **Suggest workarounds**:
+   - If GitHub is down: commits can still be made locally and pushed later
+   - Continue with local commits while GitHub is unavailable
+   - Use `git log` to track what needs to be pushed when service resumes
+
 ## Version History
 
+- v1.1 (2025-11-18): Added GitHub status checking for permission/auth errors
 - v1.0 (2025-11-18): Initial skill creation based on multi-change commit experience
