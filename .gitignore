@@ -1,0 +1,32 @@
+# Claude Code runtime and cache files
+# These should never be committed even if accidentally copied here
+
+# Credentials (CRITICAL - never commit!)
+.credentials.json
+*.credentials.json
+
+# Runtime directories
+projects/
+debug/
+todos/
+shell-snapshots/
+file-history/
+statsig/
+ide/
+session-env/
+plugins/
+
+# History and logs
+history.jsonl
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

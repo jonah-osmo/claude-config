@@ -1,0 +1,79 @@
+# Personal Development Guidelines
+
+*Personal preferences for LLM agents working across all projects.*
+
+## Coding Standards
+- **Always use absolute imports**: Never use relative imports
+- **Prioritize brevity**: Use clear naming over excessive comments
+- **No unnecessary documentation**: Only add comments when specifically requested
+
+## Function Classification System
+
+| Class | Purpose | Typing | Docstring | Tests | Naming |
+|-------|---------|--------|-----------|-------|--------|
+| **A: Public External** | Called from outside module | Full | Detailed | Required | Clean, e.g. `predict_molecules` |
+| **B: Public Internal** | Called within module | Full | Basic | Required | Descriptive, e.g. `predict_molecules_by_consensus` |
+| **C: Private Module** | Internal helpers | Optional | Simple | Encouraged | Underscore prefix, e.g. `_predict_internal` |
+| **D: Private Sub-Module** | Sub-module helpers | Optional | Optional | Optional | Underscore prefix, short, e.g. `_calc` |
+
+## Required Development Workflow
+
+When implementing new code:
+
+1. **Plan architecture**: Identify modules, assign tiers, verify dependencies
+2. **Design functions**: Define inputs/outputs, classify (A-D), write docstrings
+3. **Create structure**: Create files, import submodules, implement skeletons
+4. **Document**: Add purpose, tier level, dependencies to each file
+
+## Module Architecture: Tiered Clean Architecture
+
+ML pipeline architecture enforcing strict dependency rules for modularity.
+
+### Principles
+1. **Unidirectional Dependencies**: Higher tiers → lower tiers only
+2. **Tier Isolation**: Same-tier modules cannot depend on each other
+3. **Core Independence**: T0 has no internal dependencies
+4. **Testability**: Mock dependencies for independent testing
+
+### Tier Summary
+
+| Tier | Modules | Purpose |
+|------|---------|---------|
+| **T0** | structs, algorithms, config, utils | Pure domain logic, no dependencies |
+| **T1** | dataloaders, plotting, *_api | Application services using T0 |
+| **T2** | train_fit, inference, evaluate | Orchestration combining T0+T1 |
+| **T3** | experiment, etl, tests, notebooks | External interfaces, highest level |
+
+### Standard Structure
+
+```
+src/mypkg/
+  structs.py           # T0: Dataclasses, types
+  algorithms.py        # T0: Pure functions
+  config.py            # T0: Config schema + loader
+  utils.py             # T0: Small helpers
+  dataloaders.py       # T1: GCS/BQ I/O
+  plotting.py          # T1: Visualizations
+  train_api.py         # T1: Training interface
+  infer_api.py         # T1: Inference interface
+  eval_api.py          # T1: Evaluation interface
+  train_fit.py         # T2: Training orchestration
+  inference.py         # T2: Inference orchestration
+  evaluate.py          # T2: Evaluation orchestration
+  experiment.py        # T3: End-to-end workflows
+  etl/                 # T3: Data pipelines
+  tests/               # T3: Tests
+  notebooks/           # T3: Analysis
+```
+
+**Rules**:
+- Prefer files over directories (unless >3000 lines)
+- Always make `etl/`, `tests/`, `notebooks/` directories
+- Each subdirectory gets its own CLAUDE.md
+
+## CLAUDE.md File Management
+
+- **File naming**: Use `CLAUDE.md` (check for existing on case-sensitive filesystems)
+- **One per directory**: Don't duplicate
+- **Keep brief**: Push details to subdirectory CLAUDE.md files
+- **Avoid redundancy**: Don't duplicate info available elsewhere
