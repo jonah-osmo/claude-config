@@ -2,6 +2,48 @@
 
 *Personal preferences for LLM agents working across all projects.*
 
+## Environment Overview
+
+This is Jonah's Linux dev machine. Primary storage is a NAS mounted at `/mnt/metropolitan/`.
+
+### NAS Structure (`/mnt/metropolitan/jonah/`)
+
+| Directory | Purpose |
+|-----------|---------|
+| `code/` | Git repositories |
+| `code/_worktrees/` | Git worktrees managed by worktrunk |
+| `data/` | Datasets and data files |
+| `dotfiles/` | Shell configs (symlinked to `~`) |
+| `experiments/` | Experiment outputs |
+| `wandb/` | Weights & Biases artifacts |
+
+### Key Symlinks
+
+- `~/osmo` → `/mnt/metropolitan/jonah/code/osmo` (main repository)
+- `~/.zshrc`, `~/.tmux.conf`, etc. → dotfiles on NAS
+
+## worktrunk (wt)
+
+Git worktree manager for branch-based development. Worktrees are stored relative to each repo at `../_worktrees/<branch-name>`.
+
+### Common Commands
+
+```bash
+wt new <branch>      # Create worktree and switch to it
+wt switch <branch>   # Switch to existing worktree (or create)
+wt list              # List all worktrees
+wt merge             # Squash-merge current branch to main, cleanup
+wt remove            # Remove current worktree
+```
+
+### Workflow
+
+1. `wt new feature-x` - creates worktree, switches to it
+2. Make changes, commit as usual
+3. `wt merge` - squashes commits, merges to main, removes worktree
+
+Config: `~/.config/worktrunk/config.toml`
+
 ## Coding Standards
 - **Always use absolute imports**: Never use relative imports
 - **Prioritize brevity**: Use clear naming over excessive comments
