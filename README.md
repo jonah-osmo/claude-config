@@ -129,6 +129,17 @@ git commit -m "Resolve merge conflict"
 git push
 ```
 
+## Recommended Plugins
+
+Install via `/plugins` command in Claude Code:
+
+- **code-review** - Code review capabilities
+- **code-simplifier** - Simplify and refine code
+- **pr-review-toolkit** - Comprehensive PR review agents
+- **pyright-lsp** - Python type checking via Pyright
+- **context7** - Up-to-date library documentation lookup
+- **hookify** - Create hooks to prevent unwanted behaviors
+
 ## Custom Agents
 
 This repository includes 11 custom agents:
