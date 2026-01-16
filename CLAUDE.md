@@ -2,26 +2,6 @@
 
 *Personal preferences for LLM agents working across all projects.*
 
-## Environment Overview
-
-This is Jonah's Linux dev machine. Primary storage is a NAS mounted at `/mnt/metropolitan/`.
-
-### NAS Structure (`/mnt/metropolitan/jonah/`)
-
-| Directory | Purpose |
-|-----------|---------|
-| `code/` | Git repositories |
-| `code/_worktrees/` | Git worktrees managed by worktrunk |
-| `data/` | Datasets and data files |
-| `dotfiles/` | Shell configs (symlinked to `~`) |
-| `experiments/` | Experiment outputs |
-| `wandb/` | Weights & Biases artifacts |
-
-### Key Symlinks
-
-- `~/osmo` → `/mnt/metropolitan/jonah/code/osmo` (main repository)
-- `~/.zshrc`, `~/.tmux.conf`, etc. → dotfiles on NAS
-
 ## worktrunk (wt)
 
 Git worktree manager for branch-based development. Worktrees are stored relative to each repo at `../_worktrees/<branch-name>`.
