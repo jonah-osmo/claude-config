@@ -16,6 +16,7 @@ Personal Claude Code configuration synced across machines via git and symlinks.
 - Claude Code installed
 - Git configured
 - GitHub CLI authenticated (`gh auth login`)
+- (Optional but recommended) claude-code-transcripts for readable session exports: `uv tool install claude-code-transcripts`
 
 ### Installation Steps
 
