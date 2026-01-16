@@ -6,6 +6,7 @@ Personal Claude Code configuration synced across machines via git and symlinks.
 
 - **CLAUDE.md** - Personal development guidelines and coding standards
 - **agents/** - Custom agent definitions (11 specialized agents)
+- **commands/** - Custom slash commands
 - **skills/** - Custom skill definitions
 - **.gitignore** - Excludes runtime/cache files
 
@@ -28,10 +29,11 @@ git clone https://github.com/jonah-osmo/claude-config.git
 # 2. Create symlinks from ~/.claude/ to the repo
 ln -s ~/claude-config/CLAUDE.md ~/.claude/CLAUDE.md
 ln -s ~/claude-config/agents ~/.claude/agents
+ln -s ~/claude-config/commands ~/.claude/commands
 ln -s ~/claude-config/skills ~/.claude/skills
 
 # 3. Verify symlinks
-ls -la ~/.claude/ | grep -E '(CLAUDE.md|agents|skills)'
+ls -la ~/.claude/ | grep -E '(CLAUDE.md|agents|commands|skills)'
 
 # 4. Restart Claude Code or start a new session
 ```
@@ -77,6 +79,7 @@ git pull
 **Tracked in git:**
 - Personal development guidelines (CLAUDE.md)
 - Custom agents (agents/*.md)
+- Custom commands (commands/*.md)
 - Custom skills (skills/*.md)
 
 **NOT tracked (runtime files remain in ~/.claude/):**
@@ -100,13 +103,14 @@ This approach provides:
 
 Check symlinks exist:
 ```bash
-ls -la ~/.claude/ | grep -E '(CLAUDE.md|agents|skills)'
+ls -la ~/.claude/ | grep -E '(CLAUDE.md|agents|commands|skills)'
 ```
 
 Should show entries like:
 ```
 lrwxrwxrwx ... CLAUDE.md -> /home/jonah/claude-config/CLAUDE.md
 lrwxrwxrwx ... agents -> /home/jonah/claude-config/agents
+lrwxrwxrwx ... commands -> /home/jonah/claude-config/commands
 lrwxrwxrwx ... skills -> /home/jonah/claude-config/skills
 ```
 
@@ -139,6 +143,10 @@ Install via `/plugins` command in Claude Code:
 - **pyright-lsp** - Python type checking via Pyright
 - **context7** - Up-to-date library documentation lookup
 - **hookify** - Create hooks to prevent unwanted behaviors
+
+## Custom Commands
+
+- **/transcript** - Upload current session to GitHub Gist (requires `claude-code-transcripts`)
 
 ## Custom Agents
 
