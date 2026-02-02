@@ -18,6 +18,7 @@ Personal Claude Code configuration synced across machines via git and symlinks.
 - Git configured
 - GitHub CLI authenticated (`gh auth login`)
 - (Optional but recommended) claude-code-transcripts for readable session exports: `uv tool install claude-code-transcripts`
+- (Optional but recommended) [claude-frecency](https://github.com/murphy-osmo/claude-frecency) for frecency-based `@file` suggestions
 
 ### Installation Steps
 
@@ -35,7 +36,10 @@ ln -s ~/claude-config/skills ~/.claude/skills
 # 3. Verify symlinks
 ls -la ~/.claude/ | grep -E '(CLAUDE.md|agents|commands|skills)'
 
-# 4. Restart Claude Code or start a new session
+# 4. (Optional) Install claude-frecency for better @file suggestions
+git clone https://github.com/murphy-osmo/claude-frecency.git ~/.claude/claude-frecency
+
+# 5. Restart Claude Code or start a new session
 ```
 
 ### Verification
@@ -131,6 +135,35 @@ git pull  # Will show conflicts
 git add -A
 git commit -m "Resolve merge conflict"
 git push
+```
+
+## Claude Frecency
+
+[claude-frecency](https://github.com/murphy-osmo/claude-frecency) provides frecency-ranked file suggestions when using `@file` in Claude Code. It tracks file access patterns and suggests files based on frequency + recency.
+
+After cloning (see Installation Steps above), add the following to `~/.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [{"type": "command", "command": "python3 ~/.claude/claude-frecency/frecency_track.py"}]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|Bash",
+        "hooks": [{"type": "command", "command": "python3 ~/.claude/claude-frecency/frecency_track.py"}]
+      }
+    ]
+  },
+  "fileSuggestion": {
+    "type": "command",
+    "command": "python3 ~/.claude/claude-frecency/file_suggestion.py"
+  }
+}
 ```
 
 ## Recommended Plugins
