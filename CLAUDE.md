@@ -9,16 +9,17 @@ Git worktree manager for branch-based development. Worktrees are stored relative
 ### Common Commands
 
 ```bash
-wt new <branch>      # Create worktree and switch to it
-wt switch <branch>   # Switch to existing worktree (or create)
-wt list              # List all worktrees
-wt merge             # Squash-merge current branch to main, cleanup
-wt remove            # Remove current worktree
+wt switch --create <branch>                # Create worktree from default branch
+wt switch --create <branch> --base <ref>   # Create worktree from specific branch
+wt switch <branch>                         # Switch to existing worktree
+wt list                                    # List all worktrees
+wt merge                                   # Squash-merge current branch to main, cleanup
+wt remove                                  # Remove current worktree
 ```
 
 ### Workflow
 
-1. `wt new feature-x` - creates worktree, switches to it
+1. `wt switch --create feature-x` - creates worktree, switches to it
 2. Make changes, commit as usual
 3. `wt merge` - squashes commits, merges to main, removes worktree
 
