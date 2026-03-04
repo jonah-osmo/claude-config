@@ -94,6 +94,12 @@ src/mypkg/
 - Always make `etl/`, `tests/`, `notebooks/` directories
 - Each subdirectory gets its own CLAUDE.md
 
+## Notion
+
+- **Default workspace**: Always write to the "CLAUDE [Jonah]" page and its subpages/sub-databases only
+- **Never** create or modify pages outside "CLAUDE [Jonah]" unless explicitly instructed
+- When creating new pages or database entries, place them under "CLAUDE [Jonah]" or one of its existing sub-databases
+
 ## CLAUDE.md File Management
 
 - **File naming**: Use `CLAUDE.md` (check for existing on case-sensitive filesystems)
