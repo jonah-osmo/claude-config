@@ -99,6 +99,7 @@ src/mypkg/
 - **Default workspace**: Always write to the "CLAUDE [Jonah]" page and its subpages/sub-databases only
 - **Never** create or modify pages outside "CLAUDE [Jonah]" unless explicitly instructed
 - When creating new pages or database entries, place them under "CLAUDE [Jonah]" or one of its existing sub-databases
+- **Workspace details**: See the `notion-workspace` skill for database IDs, schemas, and routing rules
 
 ## CLAUDE.md File Management
 
