@@ -9,6 +9,7 @@ Personal Claude Code configuration synced across machines via git and symlinks.
 - **commands/** - Custom slash commands
 - **skills/** - Custom skill definitions
 - **statusline-command.sh** - Custom status line script (shows cwd, git info, context used %, model)
+- **hooks/** - Permission hooks (e.g., Notion workspace gate)
 - **.gitignore** - Excludes runtime/cache files
 
 ## Setup on New Machine
@@ -169,6 +170,53 @@ After cloning (see Installation Steps above), add the following to `~/.claude/se
   }
 }
 ```
+
+## Notion Workspace Permission Hooks
+
+Auto-allows Notion writes within the "CLAUDE [Jonah]" workspace and asks for confirmation on writes outside it. A PostToolUse hook caches page ancestry from `notion-fetch` results so subsequent writes to known pages are auto-allowed.
+
+### Prerequisites
+
+```bash
+pip install filelock
+```
+
+### Hook Registration
+
+Add the following entries to `~/.claude/settings.json` under `"hooks"`. Merge these into existing hook arrays — don't replace them.
+
+**PreToolUse** — permission gate for Notion write tools:
+```json
+{
+  "matcher": "mcp__plugin_Notion_notion__notion-(create-pages|update-page|move-pages|duplicate-page|create-comment|create-database|update-data-source|update-view|create-view)",
+  "hooks": [
+    {
+      "type": "command",
+      "command": "python3 ~/claude-config/hooks/notion-workspace-gate/pretooluse.py",
+      "timeout": 5
+    }
+  ]
+}
+```
+
+**PostToolUse** — cache populator from fetch/create results:
+```json
+{
+  "matcher": "mcp__plugin_Notion_notion__notion-(fetch|create-pages|create-database)",
+  "hooks": [
+    {
+      "type": "command",
+      "command": "python3 ~/claude-config/hooks/notion-workspace-gate/posttooluse.py",
+      "timeout": 5
+    }
+  ]
+}
+```
+
+### Notes
+
+- The workspace cache (`~/.claude/notion-workspace-cache.json`) is auto-created at runtime — no manual setup needed
+- Allowed parent IDs are configured in `hooks/notion-workspace-gate/config.py`
 
 ## Recommended Plugins
 
