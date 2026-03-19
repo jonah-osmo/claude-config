@@ -2,8 +2,12 @@
 """PostToolUse hook: cache populator for Notion workspace pages."""
 
 import json
+import os
 import re
 import sys
+import traceback
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from config import (
     ALLOWED_PARENT_IDS,
@@ -12,6 +16,13 @@ from config import (
     normalize_id,
     save_cache,
 )
+
+LOG_FILE = os.path.expanduser("~/.claude/notion-hook-debug.log")
+
+
+def log(msg):
+    with open(LOG_FILE, "a") as f:
+        f.write(f"[posttooluse] {msg}\n")
 
 ID_PATTERN = re.compile(r"[0-9a-f]{32}|[0-9a-f\-]{36}")
 
@@ -40,27 +51,41 @@ def main():
     tool_input = data.get("tool_input", {})
     tool_result = data.get("tool_result", "")
 
+    log(f"tool_result type={type(tool_result).__name__}")
     if isinstance(tool_result, dict):
+        log(f"tool_result keys={list(tool_result.keys())}")
+        tool_result = tool_result.get("text", "") or json.dumps(tool_result)
+    elif isinstance(tool_result, list):
         tool_result = json.dumps(tool_result)
+
+    log(f"tool_name={tool_name}")
+    log(f"tool_result[:500]={str(tool_result)[:500]}")
 
     if "notion-fetch" in tool_name:
         ancestor_ids = extract_ancestor_path_ids(tool_result)
+        log(f"ancestor_ids={ancestor_ids}")
         if not ancestor_ids:
+            log("No ancestor IDs found, returning")
             return
 
-        root_id = normalize_id(ancestor_ids[0])
-        if root_id != ROOT_PAGE_ID:
+        normalized_ancestors = [normalize_id(aid) for aid in ancestor_ids]
+        if ROOT_PAGE_ID not in normalized_ancestors and not any(
+            nid in ALLOWED_PARENT_IDS for nid in normalized_ancestors
+        ):
+            log(f"No workspace ancestor found in {normalized_ancestors}")
             return
 
         cache = load_cache()
         for aid in ancestor_ids:
             cache[normalize_id(aid)] = ROOT_PAGE_ID
 
-        fetched_id = tool_input.get("page_id", "")
+        fetched_id = tool_input.get("id", "") or tool_input.get("page_id", "")
+        log(f"fetched_id={fetched_id}")
         if fetched_id:
             cache[normalize_id(fetched_id)] = ROOT_PAGE_ID
 
         save_cache(cache)
+        log(f"Cache saved with {len(cache)} entries")
 
     elif "notion-create-pages" in tool_name or "notion-create-database" in tool_name:
         parent = tool_input.get("parent", {})
@@ -88,4 +113,4 @@ if __name__ == "__main__":
     try:
         main()
     except Exception:
-        pass
+        log(traceback.format_exc())
