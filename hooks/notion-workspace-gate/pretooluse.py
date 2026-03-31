@@ -35,15 +35,13 @@ def ask_outside_workspace(page_id: str = ""):
             f"Page {page_id} is outside the CLAUDE [Jonah] workspace. "
             "Writes to pages outside your workspace require explicit approval."
         )
-    output = json.dumps({
+    print(json.dumps({
         "hookSpecificOutput": {
             "hookEventName": "PreToolUse",
             "permissionDecision": "ask",
             "permissionDecisionReason": reason,
         }
-    })
-    log(f"Outputting deny: {output}")
-    print(output)
+    }))
     sys.exit(0)
 
 
@@ -55,16 +53,7 @@ def is_in_workspace(page_id: str) -> bool:
     return nid in cache
 
 
-LOG_FILE = os.path.expanduser("~/.claude/notion-hook-debug.log")
-
-
-def log(msg):
-    with open(LOG_FILE, "a") as f:
-        f.write(f"{msg}\n")
-
-
 def main():
-    log("[notion-workspace-gate] Hook invoked")
     try:
         data = json.load(sys.stdin)
     except (json.JSONDecodeError, EOFError):

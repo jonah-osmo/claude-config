@@ -173,7 +173,12 @@ After cloning (see Installation Steps above), add the following to `~/.claude/se
 
 ## Notion Workspace Permission Hooks
 
-Auto-allows Notion writes within the "CLAUDE [Jonah]" workspace and asks for confirmation on writes outside it. A PostToolUse hook caches page ancestry from `notion-fetch` results so subsequent writes to known pages are auto-allowed.
+Auto-allows Notion writes within the "CLAUDE [Jonah]" workspace and prompts for confirmation (with a reason message) on writes outside it.
+
+### How it works
+
+- **PreToolUse**: Checks the target page ID against `ALLOWED_PARENT_IDS` and a local cache. If the page is in the workspace → auto-allow. If not → prompt with a message explaining the page is outside the workspace.
+- **PostToolUse**: Intended to populate the cache from `notion-fetch` results, but Claude Code does not pass `tool_result` content for MCP tools. **The cache must be manually seeded** (see below).
 
 ### Prerequisites
 
@@ -183,7 +188,7 @@ pip install filelock
 
 ### Hook Registration
 
-Add the following entries to `~/.claude/settings.json` under `"hooks"`. Merge these into existing hook arrays — don't replace them.
+Add the following entries to `~/.claude/settings.json` under `"hooks"`. Merge into existing hook arrays — don't replace them.
 
 **PreToolUse** — permission gate for Notion write tools:
 ```json
@@ -199,7 +204,7 @@ Add the following entries to `~/.claude/settings.json` under `"hooks"`. Merge th
 }
 ```
 
-**PostToolUse** — cache populator from fetch/create results:
+**PostToolUse** — cache populator (passive; currently no-ops due to MCP tool result limitation):
 ```json
 {
   "matcher": "mcp__plugin_Notion_notion__notion-(fetch|create-pages|create-database)",
@@ -213,10 +218,29 @@ Add the following entries to `~/.claude/settings.json` under `"hooks"`. Merge th
 }
 ```
 
+### Seeding the cache
+
+Pages within the workspace that are not in `ALLOWED_PARENT_IDS` need to be added to `~/.claude/notion-workspace-cache.json` manually. The cache maps normalized page IDs (no dashes, lowercase) to the root page ID:
+
+```python
+import json
+
+ROOT = "3190f22f7b6e80188099e1454419dfec"  # CLAUDE [Jonah]
+cache = {
+    "3190f22f7b6e806cbe36000b0c4091ac": ROOT,  # Document Hub data source
+    "3190f22f7b6e80be8065ea5656df56b2": ROOT,  # Document Hub database
+    "3220f22f7b6e8130a2a8ee7bd7f0433e": ROOT,  # e.g. a specific page
+    # add more as needed
+}
+with open("~/.claude/notion-workspace-cache.json", "w") as f:
+    json.dump(cache, f)
+```
+
 ### Notes
 
-- The workspace cache (`~/.claude/notion-workspace-cache.json`) is auto-created at runtime — no manual setup needed
-- Allowed parent IDs are configured in `hooks/notion-workspace-gate/config.py`
+- Allowed parent IDs (auto-allowed without cache lookup) are in `hooks/notion-workspace-gate/config.py`
+- The `hookEventName: "PreToolUse"` field is required in the hook output — without it Claude Code treats the response as an error and falls through to allow
+- The `permissionDecision` values are `"allow"`, `"ask"`, and `"deny"`. Use `"ask"` for a prompt-with-reason (overridable); `"deny"` for a hard block
 
 ## Recommended Plugins
 
