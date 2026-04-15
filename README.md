@@ -5,7 +5,6 @@ Personal Claude Code configuration synced across machines via git and symlinks.
 ## Repository Contents
 
 - **CLAUDE.md** - Personal development guidelines and coding standards
-- **agents/** - Custom agent definitions (11 specialized agents)
 - **commands/** - Custom slash commands
 - **skills/** - Custom skill definitions
 - **statusline-command.sh** - Custom status line script (shows cwd, git info, context used %, model)
@@ -31,13 +30,12 @@ git clone https://github.com/jonah-osmo/claude-config.git
 
 # 2. Create symlinks from ~/.claude/ to the repo
 ln -s ~/claude-config/CLAUDE.md ~/.claude/CLAUDE.md
-ln -s ~/claude-config/agents ~/.claude/agents
 ln -s ~/claude-config/commands ~/.claude/commands
 ln -s ~/claude-config/skills ~/.claude/skills
 ln -s ~/claude-config/statusline-command.sh ~/.claude/statusline-command.sh
 
 # 3. Verify symlinks
-ls -la ~/.claude/ | grep -E '(CLAUDE.md|agents|commands|skills|statusline)'
+ls -la ~/.claude/ | grep -E '(CLAUDE.md|commands|skills|statusline)'
 
 # 4. (Optional) Install claude-frecency for better @file suggestions
 git clone https://github.com/murphy-osmo/claude-frecency.git ~/.claude/claude-frecency
@@ -50,7 +48,7 @@ git clone https://github.com/murphy-osmo/claude-frecency.git ~/.claude/claude-fr
 After setup, verify Claude Code loads your configuration:
 1. Start a new Claude Code session
 2. Check that personal guidelines are being followed
-3. Verify custom agents are available (if configured)
+3. Verify custom commands and skills are available
 
 ## Syncing Changes
 
@@ -85,7 +83,6 @@ git pull
 
 **Tracked in git:**
 - Personal development guidelines (CLAUDE.md)
-- Custom agents (agents/*.md)
 - Custom commands (commands/*.md)
 - Custom skills (skills/*.md)
 - Status line script (statusline-command.sh)
@@ -111,13 +108,12 @@ This approach provides:
 
 Check symlinks exist:
 ```bash
-ls -la ~/.claude/ | grep -E '(CLAUDE.md|agents|commands|skills|statusline)'
+ls -la ~/.claude/ | grep -E '(CLAUDE.md|commands|skills|statusline)'
 ```
 
 Should show entries like:
 ```
 lrwxrwxrwx ... CLAUDE.md -> /home/jonah/claude-config/CLAUDE.md
-lrwxrwxrwx ... agents -> /home/jonah/claude-config/agents
 lrwxrwxrwx ... commands -> /home/jonah/claude-config/commands
 lrwxrwxrwx ... skills -> /home/jonah/claude-config/skills
 lrwxrwxrwx ... statusline-command.sh -> /home/jonah/claude-config/statusline-command.sh
@@ -257,19 +253,3 @@ Install via `/plugins` command in Claude Code:
 
 - **/transcript** - Upload current session to GitHub Gist (requires `claude-code-transcripts`)
 
-## Custom Agents
-
-This repository includes 11 custom agents:
-- claude-md-compliance-checker
-- code-quality-pragmatist
-- dashboard-builder
-- data-researcher
-- functional-validator
-- gcms-ml-engineer
-- gcms-pipeline-engineer
-- git-workflow-manager
-- reality-checker
-- spec-validator
-- ultrathink-debugger
-
-See individual agent files in `agents/` for descriptions and usage.
