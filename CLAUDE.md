@@ -4,7 +4,7 @@
 
 ## worktrunk (wt)
 
-Git worktree manager for branch-based development. Worktrees are stored relative to each repo at `../_worktrees/<branch-name>`.
+Git worktree manager for branch-based development. Worktrees are stored at `~/w/<branch-name>` (`~/w` → `/mnt/metropolitan/jonah/code/_worktrees`).
 
 ### Common Commands
 
