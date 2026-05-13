@@ -38,5 +38,4 @@ All content must be created under this page unless the user explicitly specifies
 | Task type | multi_select | 🐞 Bug, 💬 Feature request, 💅 Polish |
 | Assignee | person | (user ID) |
 | Due date | date | (ISO-8601) |
-| Description | text | (freeform) |
 | Updated at | last_edited_time | (auto) |
