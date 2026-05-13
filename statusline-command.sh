@@ -10,9 +10,17 @@ model=$(echo "$input" | jq -r '.model.display_name // empty')
 remaining=$(echo "$input" | jq -r '.context_window.remaining_percentage // empty')
 used=$(if [ -n "$remaining" ]; then echo $((100 - remaining)); fi)
 
-# Shorten home directory to ~
+# Shorten home and ~/w (worktree symlink) for display.
+# ~/w is a symlink to ~/code/_worktrees (Mac) or /mnt/.../code/_worktrees
+# (Linux). worktrunk cd's to the physical path, so substitute the resolved
+# target back to ~/w before the broader $HOME substitution.
 home="$HOME"
-short_cwd="${cwd/#$home/\~}"
+short_cwd="$cwd"
+if [ -L "$home/w" ]; then
+  w_real=$(readlink -f "$home/w" 2>/dev/null || readlink "$home/w")
+  [ -n "$w_real" ] && short_cwd="${short_cwd/#$w_real/\~/w}"
+fi
+short_cwd="${short_cwd/#$home/\~}"
 
 # Git info (skip optional locks to avoid blocking)
 git_part=""
