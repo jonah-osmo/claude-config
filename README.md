@@ -119,6 +119,13 @@ lrwxrwxrwx ... skills -> /home/jonah/claude-config/skills
 lrwxrwxrwx ... statusline-command.sh -> /home/jonah/claude-config/statusline-command.sh
 ```
 
+If any entry shows as a regular file (`-rw-r--r--`) instead of a symlink (`lrwxrwxrwx`), it's a stale copy from before the symlink convention and won't pick up repo updates. Replace it:
+
+```bash
+mv ~/.claude/statusline-command.sh ~/.claude/statusline-command.sh.bak
+ln -s ~/claude-config/statusline-command.sh ~/.claude/statusline-command.sh
+```
+
 ### Configuration Not Loading
 
 1. Verify symlinks point to correct locations
