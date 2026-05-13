@@ -23,7 +23,7 @@ wt remove                                  # Remove current worktree
 2. Make changes, commit as usual
 3. `wt merge` - squashes commits, merges to main, removes worktree
 
-Config: `~/.config/worktrunk/config.toml`
+Config: `~/.config/worktrunk/config.toml`. A `post-create` hook runs `direnv allow .` on each new worktree so repos with an `.envrc` (e.g. osmo) load secrets automatically on first entry instead of blocking with "direnv: error .envrc is blocked".
 
 ## Coding Standards
 - **Always use absolute imports**: Never use relative imports
