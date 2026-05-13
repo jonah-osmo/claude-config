@@ -92,13 +92,13 @@ src/mypkg/
 **Rules**:
 - Prefer files over directories (unless >3000 lines)
 - Always make `etl/`, `tests/`, `notebooks/` directories
-- Each subdirectory gets its own CLAUDE.md
+- Each subdirectory gets its own AGENTS.md
 
 ## Notion
 
-- **Default workspace**: Always write to the "CLAUDE [Jonah]" page and its subpages/sub-databases only
-- **Never** create or modify pages outside "CLAUDE [Jonah]" unless explicitly instructed
-- When creating new pages or database entries, place them under "CLAUDE [Jonah]" or one of its existing sub-databases
+- **Default workspace**: Always write to the "Codex [Jonah]" page and its subpages/sub-databases only
+- **Never** create or modify pages outside "Codex [Jonah]" unless explicitly instructed
+- When creating new pages or database entries, place them under "Codex [Jonah]" or one of its existing sub-databases
 - **Workspace details**: See the `notion-workspace` skill for database IDs, schemas, and routing rules
 
 ## Secrets / API Keys
@@ -107,11 +107,11 @@ src/mypkg/
 - **Filename = env var name + `.txt`** (e.g., `OPENAI_API_KEY.txt` → `$OPENAI_API_KEY`).
 - **Project-scoped keys**: suffix the env var name (`OPENAI_API_KEY_DEFORMULATION.txt`).
 - **Loading**: env vars only; never read `~/.creds/*.txt` from Python or pass keys as function args. In the osmo repo, `.envrc` + `tools/load_cred` does this via `direnv`.
-- **Full convention**: Notion page "Secrets / API Keys — Official Pattern" under "CLAUDE [Jonah]" (https://www.notion.so/35f0f22f7b6e81cfa370e60aaf5979d9).
+- **Full convention**: Notion page "Secrets / API Keys — Official Pattern" under "Codex [Jonah]" (https://www.notion.so/35f0f22f7b6e81cfa370e60aaf5979d9).
 
-## CLAUDE.md File Management
+## AGENTS.md File Management
 
-- **File naming**: Use `CLAUDE.md` (check for existing on case-sensitive filesystems)
+- **File naming**: Use `AGENTS.md` (check for existing on case-sensitive filesystems)
 - **One per directory**: Don't duplicate
-- **Keep brief**: Push details to subdirectory CLAUDE.md files
+- **Keep brief**: Push details to subdirectory AGENTS.md files
 - **Avoid redundancy**: Don't duplicate info available elsewhere
